@@ -13,7 +13,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+import pymysql
 
+pymysql.install_as_MySQLdb()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,13 +23,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+from decouple import config
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-tzb)mjy0ug!$2#oh74y11p)86sta-h&vmlsya3m(@!frs-1cm+')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-tzb)mjy0ug!$2#oh74y11p)86sta-h&vmlsya3m(@!frs-1cm+')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
@@ -88,9 +92,9 @@ WSGI_APPLICATION = 'multitask_backend.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get(
+        default=config(
             'DATABASE_URL',
-            'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
+            default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
         ),
         conn_max_age=600,
         ssl_require=False,

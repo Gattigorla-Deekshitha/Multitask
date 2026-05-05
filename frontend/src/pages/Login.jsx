@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Hash, Shield, User, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Hash, Shield, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { cn } from '../lib/utils';
 import api from '../services/api';
 
@@ -13,14 +13,10 @@ const Login = ({ onLogin }) => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  // Redirect if already logged in
-  React.useEffect(() => {
-    if (localStorage.getItem('token')) {
-      navigate('/');
-    }
-  }, [navigate]);
+  // Removed auto-redirect so you can always access the login page manually
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -100,19 +96,29 @@ const Login = ({ onLogin }) => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
+                    <a href="#" className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors">Forgot password?</a>
+                  </div>
                   <div className="relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">
                       <Lock size={18} />
                     </div>
                     <input 
-                      type="password" 
+                      type={showPassword ? 'text' : 'password'}
                       placeholder="Enter password"
                       value={formData.password}
                       onChange={(e) => setFormData({...formData, password: e.target.value})}
-                      className="w-full pl-12 pr-4 py-4 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                      className="w-full pl-12 pr-12 py-4 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
                       required
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors focus:outline-none"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
                   </div>
                 </div>
               </>

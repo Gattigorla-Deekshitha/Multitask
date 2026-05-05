@@ -13,6 +13,7 @@ import { cn } from '../../lib/utils';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = React.useState(true);
+  const [showAboutModal, setShowAboutModal] = React.useState(false);
 
   const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
@@ -38,11 +39,14 @@ const Sidebar = () => {
         !isOpen && "lg:w-20",
         "flex flex-col"
       )}>
-        <div className="p-6 flex items-center gap-3">
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
+        <div 
+          onClick={() => setShowAboutModal(true)}
+          className="p-6 flex items-center gap-3 cursor-pointer hover:bg-slate-50 transition-colors group"
+        >
+          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl group-hover:scale-105 transition-transform shadow-md">
             M
           </div>
-          {isOpen && <span className="font-bold text-xl text-slate-800 tracking-tight">MultiTask</span>}
+          {isOpen && <span className="font-bold text-xl text-slate-800 tracking-tight group-hover:text-indigo-600 transition-colors">MultiTask</span>}
         </div>
 
         <nav className="flex-1 px-4 py-4 space-y-2">
@@ -83,6 +87,39 @@ const Sidebar = () => {
            </div>
         </div>
       </aside>
+
+      {/* About Modal */}
+      {showAboutModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white p-8 rounded-3xl w-full max-w-lg shadow-2xl scale-in-center">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md">
+                  M
+                </div>
+                <h3 className="text-2xl font-extrabold text-slate-900">About MultiTask</h3>
+              </div>
+              <button onClick={() => setShowAboutModal(false)} className="p-2 text-slate-400 hover:bg-slate-100 rounded-xl transition-colors">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="space-y-4 text-slate-600">
+              <p className="font-medium text-lg text-slate-800">Your ultimate team & task management platform.</p>
+              <p>MultiTask is designed to streamline your workflows, providing separate environments for Admins and Members to collaborate seamlessly.</p>
+              <ul className="list-disc list-inside space-y-2 mt-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <li>Create and track projects & tasks</li>
+                <li>Assign tasks to team members</li>
+                <li>Monitor real-time status and deadlines</li>
+                <li>Role-based access control (Admin & Member)</li>
+              </ul>
+              <div className="pt-4 border-t border-slate-100 text-sm flex justify-between items-center mt-4">
+                <span>Version 1.0.0</span>
+                <span className="text-indigo-600 font-semibold">© 2026 MultiTask Pro</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

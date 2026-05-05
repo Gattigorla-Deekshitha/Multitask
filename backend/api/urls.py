@@ -10,4 +10,5 @@ urlpatterns = [
     path('tasks/<int:pk>/', views.task_detail, name='task-detail'),
     path('dashboard/', views.dashboard_stats, name='dashboard-stats'),
     path('login/', views.login_view, name='login'),
+    path('change-password/', views.change_password, name='change-password'),
 ]

@@ -91,34 +91,54 @@ const Members = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {members.map((member) => (
-          <div key={member.id} className="p-6 rounded-3xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all group">
-            <div className="flex justify-between items-start mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold text-xl">
+        {members.map((member, i) => {
+          const gradients = [
+            "from-indigo-50 to-white",
+            "from-purple-50 to-white",
+            "from-blue-50 to-white",
+            "from-emerald-50 to-white",
+            "from-rose-50 to-white",
+          ];
+          const bgGradient = gradients[i % gradients.length];
+
+          return (
+          <div key={member.id} className={`relative overflow-hidden p-7 rounded-[2rem] bg-gradient-to-br ${bgGradient} border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group`}>
+            {/* Decorative blob */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700"></div>
+
+            <div className="relative z-10 flex justify-between items-start mb-6">
+              <div className="w-16 h-16 rounded-[1.25rem] bg-white/80 backdrop-blur-md shadow-sm border border-white/60 flex items-center justify-center text-indigo-600 font-extrabold text-2xl group-hover:scale-110 transition-transform duration-500">
                 {member.name.charAt(0)}
               </div>
               {isAdmin && (
-                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => handleEdit(member)} className="p-2 text-slate-400 hover:text-indigo-600"><Edit2 size={16} /></button>
-                  <button onClick={() => handleDelete(member.id)} className="p-2 text-slate-400 hover:text-rose-600"><Trash2 size={16} /></button>
+                <div className="flex gap-1 bg-white/60 backdrop-blur-sm rounded-xl p-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 shadow-sm border border-white/40">
+                  <button onClick={() => handleEdit(member)} className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-white transition-colors"><Edit2 size={16} /></button>
+                  <button onClick={() => handleDelete(member.id)} className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-white transition-colors"><Trash2 size={16} /></button>
                 </div>
               )}
             </div>
-            <h3 className="text-lg font-bold text-slate-800 mb-1">{member.name}</h3>
-            <div className="flex items-center gap-2 text-slate-500 text-sm mb-4">
-              <Mail size={14} />
-              <span>{member.email}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${
-                member.role === 'Admin' ? "bg-amber-100 text-amber-600" : "bg-blue-100 text-blue-600"
-              }`}>
-                <Shield size={12} />
-                {member.role}
-              </span>
+            <div className="relative z-10">
+              <h3 className="text-xl font-extrabold text-slate-800 mb-1 tracking-tight group-hover:text-indigo-600 transition-colors">{member.name}</h3>
+              <div className="flex items-center gap-2 text-slate-500 font-medium text-sm mb-5">
+                <Mail size={14} className="text-indigo-400" />
+                <span>{member.email}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`px-4 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm border ${
+                  member.role === 'Admin' ? "bg-amber-100/80 text-amber-700 border-amber-200" : "bg-blue-100/80 text-blue-700 border-blue-200"
+                }`}>
+                  <Shield size={14} />
+                  {member.role}
+                </span>
+                {member.member_code && (
+                  <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100/80 text-slate-600 border border-slate-200 shadow-sm">
+                    {member.member_code}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
-        ))}
+        )})}
       </div>
 
       {/* Modal */}

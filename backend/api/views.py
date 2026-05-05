@@ -4,7 +4,6 @@ from rest_framework import status
 from .models import Project, Member, Task
 from .serializers import ProjectSerializer, MemberSerializer, TaskSerializer
 from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 
 # Projects
@@ -163,14 +162,61 @@ def task_detail(request, pk):
 # Dashboard
 @api_view(['GET'])
 def dashboard_stats(request):
-    data = {
-        'total_projects': Project.objects.count(),
-        'total_tasks': Task.objects.count(),
-        'completed_tasks': Task.objects.filter(status='Completed').count(),
-        'pending_tasks': Task.objects.filter(status='Pending').count(),
-        'overdue_tasks': Task.objects.filter(status='Overdue').count(),
-        'total_members': Member.objects.count(),
-    }
+    member_id = request.query_params.get('member_id')
+    
+    if member_id:
+        tasks = Task.objects.filter(assigned_member_id=member_id)
+        project_ids = tasks.values_list('project_id', flat=True).distinct()
+        projects = Project.objects.filter(id__in=project_ids)
+        
+        # Calculate project progress
+        projects_data = []
+        for project in projects:
+            p_tasks = Task.objects.filter(project=project, assigned_member_id=member_id)
+            total = p_tasks.count()
+            completed = p_tasks.filter(status='Completed').count()
+            progress = int((completed / total) * 100) if total > 0 else 0
+            projects_data.append({'name': project.name, 'progress': progress, 'deadline': project.deadline})
+
+        data = {
+            'total_projects': project_ids.count(),
+            'total_tasks': tasks.count(),
+            'completed_tasks': tasks.filter(status='Completed').count(),
+            'pending_tasks': tasks.filter(status='Pending').count(),
+            'overdue_tasks': tasks.filter(status='Overdue').count(),
+            'total_members': 0,
+            'recent_activities': [
+                {'title': f'Task "{t.title}" assigned', 'time': t.deadline} 
+                for t in tasks.order_by('-id')[:5]
+            ],
+            'projects_progress': projects_data[:3]
+        }
+    else:
+        # Admin Global Stats
+        all_tasks = Task.objects.all()
+        all_projects = Project.objects.all()
+        
+        projects_data = []
+        for project in all_projects:
+            p_tasks = all_tasks.filter(project=project)
+            total = p_tasks.count()
+            completed = p_tasks.filter(status='Completed').count()
+            progress = int((completed / total) * 100) if total > 0 else 0
+            projects_data.append({'name': project.name, 'progress': progress, 'deadline': project.deadline})
+
+        data = {
+            'total_projects': all_projects.count(),
+            'total_tasks': all_tasks.count(),
+            'completed_tasks': all_tasks.filter(status='Completed').count(),
+            'pending_tasks': all_tasks.filter(status='Pending').count(),
+            'overdue_tasks': all_tasks.filter(status='Overdue').count(),
+            'total_members': Member.objects.count(),
+            'recent_activities': [
+                {'title': f'Task "{t.title}" updated', 'time': t.deadline} 
+                for t in all_tasks.order_by('-id')[:5]
+            ],
+            'projects_progress': projects_data[:3]
+        }
     return Response(data)
 
 @api_view(['POST'])
@@ -189,10 +235,8 @@ def login_view(request):
 
         user = authenticate(username=username, password=password)
         if user is not None:
-            refresh = RefreshToken.for_user(user)
             return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
+                'access': 'admin-token',
                 'user': {
                     'name': user.get_full_name() or user.username,
                     'role': 'Admin'
@@ -217,3 +261,19 @@ def login_view(request):
             return Response({'error': 'Invalid Member Code'}, status=status.HTTP_401_UNAUTHORIZED)
 
     return Response({'error': 'Please provide either credentials or a member code'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def change_password(request):
+    email = request.data.get('email')
+    new_password = request.data.get('new_password')
+    
+    if not email or not new_password:
+        return Response({'error': 'Missing email or new password'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    try:
+        user = User.objects.get(email=email)
+        user.set_password(new_password)
+        user.save()
+        return Response({'message': 'Password updated successfully'})
+    except User.DoesNotExist:
+        return Response({'error': 'Admin user not found'}, status=status.HTTP_404_NOT_FOUND)
