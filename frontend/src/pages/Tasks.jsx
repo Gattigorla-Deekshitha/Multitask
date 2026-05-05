@@ -25,8 +25,8 @@ const Tasks = () => {
   const fetchData = async () => {
     try {
       const [tasksRes, projectsRes, membersRes] = await Promise.all([
-        taskService.getAll(),
-        projectService.getAll(),
+        taskService.getAll(isAdmin ? null : user?.id),
+        projectService.getAll(isAdmin ? null : user?.id),
         memberService.getAll()
       ]);
       setTasks(tasksRes.data);

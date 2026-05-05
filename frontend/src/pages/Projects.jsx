@@ -19,7 +19,7 @@ const Projects = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await projectService.getAll();
+      const response = await projectService.getAll(isAdmin ? null : user?.id);
       setProjects(response.data);
     } catch (error) {
       console.error("Error fetching projects", error);

@@ -10,7 +10,13 @@ from django.contrib.auth.models import User
 @api_view(['GET', 'POST'])
 def project_list_create(request):
     if request.method == 'GET':
-        projects = Project.objects.all()
+        member_id = request.query_params.get('member_id')
+        if member_id:
+            # Show only projects where the member has assigned tasks
+            project_ids = Task.objects.filter(assigned_member_id=member_id).values_list('project_id', flat=True).distinct()
+            projects = Project.objects.filter(id__in=project_ids)
+        else:
+            projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
     
@@ -108,7 +114,12 @@ def member_detail(request, pk):
 @api_view(['GET', 'POST'])
 def task_list_create(request):
     if request.method == 'GET':
-        tasks = Task.objects.all()
+        member_id = request.query_params.get('member_id')
+        if member_id:
+            # Show only tasks assigned to this member
+            tasks = Task.objects.filter(assigned_member_id=member_id)
+        else:
+            tasks = Task.objects.all()
         serializer = TaskSerializer(tasks, many=True)
         return Response(serializer.data)
     

@@ -24,8 +24,8 @@ api.interceptors.response.use(
 );
 
 export const projectService = {
-    getAll: () => api.get('/projects/'),
-    getById: (id) => api.get(`/projects/${id}/`),
+    getAll: (memberId) => api.get(memberId ? `/projects/?member_id=${memberId}` : '/projects/'),
+    getOne: (id) => api.get(`/projects/${id}/`),
     create: (data) => api.post('/projects/', data),
     update: (id, data) => api.put(`/projects/${id}/`, data),
     delete: (id) => api.delete(`/projects/${id}/`),
@@ -33,15 +33,15 @@ export const projectService = {
 
 export const memberService = {
     getAll: () => api.get('/members/'),
-    getById: (id) => api.get(`/members/${id}/`),
+    getOne: (id) => api.get(`/members/${id}/`),
     create: (data) => api.post('/members/', data),
     update: (id, data) => api.put(`/members/${id}/`, data),
     delete: (id) => api.delete(`/members/${id}/`),
 };
 
 export const taskService = {
-    getAll: () => api.get('/tasks/'),
-    getById: (id) => api.get(`/tasks/${id}/`),
+    getAll: (memberId) => api.get(memberId ? `/tasks/?member_id=${memberId}` : '/tasks/'),
+    getOne: (id) => api.get(`/tasks/${id}/`),
     create: (data) => api.post('/tasks/', data),
     update: (id, data) => api.put(`/tasks/${id}/`, data),
     delete: (id) => api.delete(`/tasks/${id}/`),
