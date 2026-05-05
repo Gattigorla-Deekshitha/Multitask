@@ -36,7 +36,9 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
 CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
     'https://*.up.railway.app',
+    'https://multitask-management.up.railway.app',
     'http://localhost:5173',
+    'http://localhost:5174',
     'http://localhost:3000',
 ]
 

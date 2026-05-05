@@ -34,7 +34,7 @@ const Settings = ({ onLogout }) => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    if (onLogout) onLogout();
+    window.location.href = '/login';
   };
 
   return (
