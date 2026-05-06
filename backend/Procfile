@@ -1,1 +1,1 @@
-web: gunicorn multitask_backend.wsgi --log-file -
+web: python manage.py collectstatic --noinput && python manage.py migrate && gunicorn multitask_backend.wsgi --bind 0.0.0.0:$PORT
