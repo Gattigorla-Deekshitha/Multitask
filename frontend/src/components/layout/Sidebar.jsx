@@ -7,12 +7,23 @@ import {
   CheckSquare, 
   Settings, 
   Menu,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
+const Sidebar = () => {
+  const [isOpen, setIsOpen] = React.useState(true);
+  const [showAboutModal, setShowAboutModal] = React.useState(false);
   const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const isAdmin = user.role === 'Admin';
+
+  const navItems = [
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
+    { name: 'Projects', icon: Briefcase, path: '/projects' },
+    { name: 'Members', icon: Users, path: '/members' },
+    { name: 'Tasks', icon: CheckSquare, path: '/tasks' },
+    { name: 'Settings', icon: Settings, path: '/settings' },
+  ];
 
   const handleLogout = () => {
     localStorage.removeItem('token');
