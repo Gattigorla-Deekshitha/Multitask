@@ -31,7 +31,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-tzb)mjy0ug!$2#oh74y11
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
+ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
