@@ -13,5 +13,4 @@ RUN npm install -g serve
 
 EXPOSE 3000
 
-# Start the app with serve on the dynamic port
-CMD serve -s dist -l $PORT
+CMD ["sh", "-c", "serve -s dist -l $PORT"]
