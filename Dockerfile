@@ -7,7 +7,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Stage 2: Build Backend
-FROM python:3.12-slim
+FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies
@@ -30,4 +30,5 @@ ENV PORT=8080
 
 # Run migrations and start server
 # Run migrations and start server
-CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py migrate --noinput ; gunicorn multitask_backend.wsgi --bind 0.0.0.0:$PORT --timeout 120"]
+# Run migrations and start server
+CMD python manage.py collectstatic --noinput && python manage.py migrate --noinput && gunicorn multitask_backend.wsgi --bind 0.0.0.0:$PORT --timeout 120
