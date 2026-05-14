@@ -7,13 +7,19 @@ import {
   CheckSquare, 
   Settings, 
   Menu,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = React.useState(true);
   const [showAboutModal, setShowAboutModal] = React.useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem('dummy_token');
+    window.location.href = '/login';
+  };
 
   const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
@@ -70,6 +76,18 @@ const Sidebar = () => {
           ))}
         </nav>
 
+        <div className="p-4 border-t border-slate-100 flex flex-col gap-2">
+           <button 
+             onClick={handleLogout}
+             className={cn(
+               "flex items-center gap-3 p-3 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors font-bold text-sm",
+               !isOpen && "justify-center"
+             )}
+           >
+              <LogOut size={20} />
+              {isOpen && <span>Logout</span>}
+           </button>
+        </div>
       </aside>
 
       {/* About Modal */}

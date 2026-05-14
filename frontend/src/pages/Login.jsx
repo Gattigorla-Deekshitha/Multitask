@@ -23,20 +23,12 @@ const Login = ({ onLogin }) => {
     setError('');
     setLoading(true);
 
-    try {
-      const response = await api.post('/login/', formData);
-      const { access, user } = response.data;
-      
-      localStorage.setItem('token', access);
-      localStorage.setItem('user', JSON.stringify(user));
-      
-      if (onLogin) onLogin();
+    // Simulated login to redirect to dashboard since real auth is disabled
+    setTimeout(() => {
+      localStorage.setItem('dummy_token', 'true');
       navigate('/');
-    } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Check your credentials.');
-    } finally {
       setLoading(false);
-    }
+    }, 800);
   };
 
   return (
