@@ -2,40 +2,13 @@ import React, { useState } from 'react';
 import { User, Mail, Shield, LogOut, Save, Bell, Moon, X, CheckCircle2 } from 'lucide-react';
 import api from '../services/api';
 
-const Settings = ({ onLogout }) => {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const isAdmin = user.role === 'Admin';
+const Settings = () => {
+  const isAdmin = true;
   
   const [formData, setFormData] = useState({
-    name: user.name || (isAdmin ? 'Admin User' : 'Team Member'),
-    email: user.email || (isAdmin ? 'admin@gmail.com' : 'No Email'),
+    name: 'Admin User',
+    email: 'admin@example.com',
   });
-
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
-  const [passwordStatus, setPasswordStatus] = useState({ loading: false, success: false, error: '' });
-
-  const handleChangePassword = async (e) => {
-    e.preventDefault();
-    setPasswordStatus({ loading: true, success: false, error: '' });
-    try {
-      await api.post('/change-password/', { email: user.email, new_password: newPassword });
-      setPasswordStatus({ loading: false, success: true, error: '' });
-      setTimeout(() => {
-        setShowPasswordModal(false);
-        setNewPassword('');
-        setPasswordStatus({ loading: false, success: false, error: '' });
-      }, 2000);
-    } catch (err) {
-      setPasswordStatus({ loading: false, success: false, error: err.response?.data?.error || 'Failed to change password' });
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/login';
-  };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -81,38 +54,6 @@ const Settings = ({ onLogout }) => {
               </div>
             </form>
           </div>
-
-          {isAdmin && (
-            <div className="p-8 rounded-3xl bg-white border border-slate-100 shadow-sm">
-              <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <Shield size={20} className="text-indigo-600" />
-                Security
-              </h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50">
-                  <div>
-                    <p className="font-semibold text-slate-700">Password</p>
-                    <p className="text-xs text-slate-500">Ensure your account is secure</p>
-                  </div>
-                  <button 
-                    onClick={() => setShowPasswordModal(true)}
-                    className="px-4 py-2 text-sm font-bold text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors"
-                  >
-                    Change Password
-                  </button>
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50">
-                  <div>
-                    <p className="font-semibold text-slate-700">Two-Factor Authentication</p>
-                    <p className="text-xs text-slate-500">Add an extra layer of security</p>
-                  </div>
-                  <div className="w-12 h-6 bg-slate-200 rounded-full relative cursor-not-allowed">
-                    <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Sidebar Settings */}
@@ -130,18 +71,6 @@ const Settings = ({ onLogout }) => {
                 </div>
               ))}
             </div>
-          </div>
-
-          <div className="p-8 rounded-3xl bg-rose-50 border border-rose-100 shadow-sm">
-            <h2 className="text-xl font-bold text-rose-800 mb-2">Danger Zone</h2>
-            <p className="text-rose-600/70 text-sm mb-6">Once you logout, you will need your credentials to enter again.</p>
-            <button 
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-rose-600 text-white rounded-2xl font-bold hover:bg-rose-700 transition-all shadow-lg shadow-rose-100"
-            >
-              <LogOut size={20} />
-              Logout Account
-            </button>
           </div>
         </div>
       </div>

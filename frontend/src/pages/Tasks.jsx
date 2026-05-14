@@ -4,8 +4,7 @@ import { taskService, projectService, memberService } from '../services/api';
 import { cn } from '../lib/utils';
 
 const Tasks = () => {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const isAdmin = user.role === 'Admin';
+  const isAdmin = true;
   const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
   const [members, setMembers] = useState([]);
@@ -25,8 +24,8 @@ const Tasks = () => {
   const fetchData = async () => {
     try {
       const [tasksRes, projectsRes, membersRes] = await Promise.all([
-        taskService.getAll(isAdmin ? null : user?.id),
-        projectService.getAll(isAdmin ? null : user?.id),
+        taskService.getAll(),
+        projectService.getAll(),
         memberService.getAll()
       ]);
       setTasks(tasksRes.data);
