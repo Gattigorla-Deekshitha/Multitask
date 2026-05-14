@@ -3,7 +3,7 @@ import { User, Mail, Shield, LogOut, Save, Bell, Moon, X, CheckCircle2 } from 'l
 import api from '../services/api';
 
 const Settings = ({ onLogout }) => {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = (() => { try { const userStr = localStorage.getItem('user'); return userStr && userStr !== 'undefined' ? JSON.parse(userStr) : {}; } catch { return {}; } })();
   const isAdmin = user.role === 'Admin';
   
   const [formData, setFormData] = useState({

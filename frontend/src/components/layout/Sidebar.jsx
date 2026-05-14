@@ -15,7 +15,7 @@ import { cn } from '../../lib/utils';
 const Sidebar = () => {
   const [isOpen, setIsOpen] = React.useState(true);
   const [showAboutModal, setShowAboutModal] = React.useState(false);
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = (() => { try { const userStr = localStorage.getItem('user'); return userStr && userStr !== 'undefined' ? JSON.parse(userStr) : {}; } catch { return {}; } })();
 
   const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },

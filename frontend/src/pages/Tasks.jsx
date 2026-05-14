@@ -4,7 +4,7 @@ import { taskService, projectService, memberService } from '../services/api';
 import { cn } from '../lib/utils';
 
 const Tasks = () => {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = (() => { try { const userStr = localStorage.getItem('user'); return userStr && userStr !== 'undefined' ? JSON.parse(userStr) : {}; } catch { return {}; } })();
   const isAdmin = user.role === 'Admin';
   const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);

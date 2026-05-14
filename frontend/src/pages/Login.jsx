@@ -25,7 +25,17 @@ const Login = ({ onLogin }) => {
 
     try {
       const response = await api.post('/login/', formData);
+      
+      // If the API returns HTML instead of JSON (e.g. 404 handled by serve)
+      if (!response.data || typeof response.data === 'string') {
+          throw new Error('API route not found. Check backend deployment.');
+      }
+
       const { access, user } = response.data;
+      
+      if (!access || !user) {
+          throw new Error('Invalid response from server.');
+      }
       
       localStorage.setItem('token', access);
       localStorage.setItem('user', JSON.stringify(user));
@@ -33,7 +43,7 @@ const Login = ({ onLogin }) => {
       if (onLogin) onLogin();
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Check your credentials.');
+      setError(err.response?.data?.error || err.message || 'Login failed. Check your credentials.');
     } finally {
       setLoading(false);
     }

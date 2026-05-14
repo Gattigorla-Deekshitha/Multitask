@@ -3,7 +3,7 @@ import { Plus, Edit2, Trash2, Mail, Shield } from 'lucide-react';
 import { memberService } from '../services/api';
 
 const Members = () => {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = (() => { try { const userStr = localStorage.getItem('user'); return userStr && userStr !== 'undefined' ? JSON.parse(userStr) : {}; } catch { return {}; } })();
   const isAdmin = user.role === 'Admin';
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);

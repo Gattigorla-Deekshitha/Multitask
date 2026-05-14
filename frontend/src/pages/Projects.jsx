@@ -4,7 +4,7 @@ import { projectService } from '../services/api';
 import { cn } from '../lib/utils';
 
 const Projects = () => {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = (() => { try { const userStr = localStorage.getItem('user'); return userStr && userStr !== 'undefined' ? JSON.parse(userStr) : {}; } catch { return {}; } })();
   const isAdmin = user.role === 'Admin';
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
