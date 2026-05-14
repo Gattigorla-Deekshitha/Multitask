@@ -58,8 +58,15 @@ const Dashboard = () => {
   const [showReportModal, setShowReportModal] = useState(false);
   const [showActivityModal, setShowActivityModal] = useState(false);
   
-  const userStr = localStorage.getItem('user');
-  const user = userStr ? JSON.parse(userStr) : null;
+  let user = null;
+  try {
+    const userStr = localStorage.getItem('user');
+    if (userStr && userStr !== 'undefined') {
+      user = JSON.parse(userStr);
+    }
+  } catch (e) {
+    console.error('Error parsing user', e);
+  }
   const isAdmin = user?.role === 'Admin';
 
   useEffect(() => {
