@@ -29,4 +29,4 @@ ENV PYTHONUNBUFFERED=1
 ENV PORT=8080
 
 # Run migrations and start server
-CMD ["sh", "-c", "python manage.py collectstatic --noinput && (python manage.py migrate || true) && gunicorn multitask_backend.wsgi --bind 0.0.0.0:$PORT"]
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && (python manage.py migrate --noinput || true) && gunicorn multitask_backend.wsgi --bind 0.0.0.0:$PORT --timeout 120 --workers 3"]
