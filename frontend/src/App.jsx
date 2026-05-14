@@ -21,7 +21,7 @@ function App() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  const isAuthenticated = !!token;
+  const isAuthenticated = !!token && token !== 'undefined' && token !== 'null';
 
   return (
     <Router>
