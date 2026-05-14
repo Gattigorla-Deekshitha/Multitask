@@ -24,7 +24,7 @@ const Login = ({ onLogin }) => {
     setLoading(true);
 
     try {
-      const response = await api.post('/login/', formData);
+      const response = await api.post('login/', formData);
       
       // If the API returns HTML instead of JSON (e.g. 404 handled by serve)
       if (!response.data || typeof response.data === 'string') {
