@@ -58,10 +58,14 @@ const Dashboard = () => {
   const [showReportModal, setShowReportModal] = useState(false);
   const [showActivityModal, setShowActivityModal] = useState(false);
   
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const isAdmin = user?.role === 'Admin';
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await dashboardService.getStats();
+        const response = await dashboardService.getStats(isAdmin ? null : user?.id);
         setStats(response.data);
       } catch (error) {
         console.error("Error fetching stats", error);
@@ -70,7 +74,7 @@ const Dashboard = () => {
       }
     };
     fetchStats();
-  }, []);
+  }, [isAdmin, user?.id]);
 
   if (loading) return (
     <div className="flex items-center justify-center h-[60vh]">
@@ -83,7 +87,7 @@ const Dashboard = () => {
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
-            Dashboard
+            {isAdmin ? "Admin Dashboard" : `${user?.name || "Member"} Dashboard`}
           </h1>
           <p className="text-slate-500 font-medium">Here's what's happening with your projects today.</p>
         </div>
@@ -97,6 +101,8 @@ const Dashboard = () => {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {isAdmin && (
+          <>
             <StatCard 
               title="Total Projects" 
               value={stats.total_projects} 
@@ -113,6 +119,8 @@ const Dashboard = () => {
               gradientClass="bg-gradient-to-br from-emerald-400 via-green-500 to-teal-500 text-white"
               onClick={() => navigate('/members')}
             />
+          </>
+        )}
         <StatCard 
           title="Total Tasks" 
           value={stats.total_tasks} 

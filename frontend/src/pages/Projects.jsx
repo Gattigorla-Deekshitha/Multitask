@@ -4,7 +4,8 @@ import { projectService } from '../services/api';
 import { cn } from '../lib/utils';
 
 const Projects = () => {
-  const isAdmin = true;
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const isAdmin = user.role === 'Admin';
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,7 +19,7 @@ const Projects = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await projectService.getAll();
+      const response = await projectService.getAll(isAdmin ? null : user?.id);
       setProjects(response.data);
     } catch (error) {
       console.error("Error fetching projects", error);

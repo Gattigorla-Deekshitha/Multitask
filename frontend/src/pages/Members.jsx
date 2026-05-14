@@ -3,7 +3,8 @@ import { Plus, Edit2, Trash2, Mail, Shield } from 'lucide-react';
 import { memberService } from '../services/api';
 
 const Members = () => {
-  const isAdmin = true;
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const isAdmin = user.role === 'Admin';
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);

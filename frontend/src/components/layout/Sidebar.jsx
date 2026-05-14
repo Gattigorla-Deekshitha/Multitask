@@ -15,11 +15,7 @@ import { cn } from '../../lib/utils';
 const Sidebar = () => {
   const [isOpen, setIsOpen] = React.useState(true);
   const [showAboutModal, setShowAboutModal] = React.useState(false);
-
-  const handleLogout = () => {
-    localStorage.removeItem('dummy_token');
-    window.location.href = '/login';
-  };
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
@@ -28,6 +24,12 @@ const Sidebar = () => {
     { name: 'Tasks', icon: CheckSquare, path: '/tasks' },
     { name: 'Settings', icon: Settings, path: '/settings' },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  };
 
   return (
     <>
@@ -77,6 +79,20 @@ const Sidebar = () => {
         </nav>
 
         <div className="p-4 border-t border-slate-100 flex flex-col gap-2">
+           <div className={cn(
+             "flex items-center gap-3 p-3 rounded-xl bg-slate-50",
+             !isOpen && "justify-center"
+           )}>
+              <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                {user.name?.charAt(0) || 'A'}
+              </div>
+              {isOpen && (
+                <div className="flex flex-col overflow-hidden">
+                  <span className="text-sm font-bold text-slate-700 truncate">{user.name || 'Admin'}</span>
+                  <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">{user.role || 'Admin'}</span>
+                </div>
+              )}
+           </div>
            <button 
              onClick={handleLogout}
              className={cn(

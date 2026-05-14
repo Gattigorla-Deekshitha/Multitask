@@ -9,6 +9,19 @@ const api = axios.create({
     },
 });
 
+// Add a response interceptor to handle token expiration/invalid tokens
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            // Token is invalid or expired
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login'; // Force redirect to login page
+        }
+        return Promise.reject(error);
+    }
+);
 
 export const projectService = {
     getAll: (memberId) => api.get(memberId ? `/projects/?member_id=${memberId}` : '/projects/'),
