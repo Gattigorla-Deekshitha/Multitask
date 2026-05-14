@@ -11,5 +11,5 @@ urlpatterns = [
     path('test/', test),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^(?!api|admin|test).*$', TemplateView.as_view(template_name='index.html')),
 ]
