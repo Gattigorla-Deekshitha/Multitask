@@ -7,7 +7,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Stage 2: Build Backend
-FROM python:3.13-slim
+FROM python:3.12-slim
 WORKDIR /app
 
 # Install system dependencies
@@ -29,4 +29,4 @@ ENV PYTHONUNBUFFERED=1
 ENV PORT=8080
 
 # Run migrations and start server
-CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn multitask_backend.wsgi --bind 0.0.0.0:$PORT"]
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && (python manage.py migrate || true) && gunicorn multitask_backend.wsgi --bind 0.0.0.0:$PORT"]
